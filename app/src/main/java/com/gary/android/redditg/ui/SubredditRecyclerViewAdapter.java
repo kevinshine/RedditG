@@ -42,20 +42,27 @@ public class SubredditRecyclerViewAdapter extends RecyclerView.Adapter<Subreddit
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         Submission item = mValues.get(position);
+
         holder.mItem = item;
         holder.titleView.setText(item.getTitle());
 
         holder.mView.setOnClickListener(v -> {
             String id = item.getId();
             if (!TextUtils.isEmpty(id)){
-                Intent intent = new Intent(mContext,SubmissionDetailActivity.class);
-                intent.putExtra(Constants.EXTRA_SUBMISSION_ID,id);
-                mContext.startActivity(intent);
+                if (Constants.REDDIT_DOMAIN.equals(item.getDomain())){
+                    Intent intent = new Intent(mContext,SubmissionDetailActivity.class);
+                    intent.putExtra(Constants.EXTRA_SUBMISSION_ID,id);
+                    mContext.startActivity(intent);
+                }else {
+                    Intent intent = new Intent(mContext,SubmissionDetailWebViewActivity.class);
+                    intent.putExtra(Constants.EXTRA_SUBMISSION_ID,id);
+                    intent.putExtra(Constants.EXTRA_SUBMISSION_URL,item.getUrl());
+                    mContext.startActivity(intent);
+                }
             }
         });
 
         Log.d(TAG, "thumb uri:" + item.getThumbnail());
-
         Glide.with(holder.thumbView).load(item.getThumbnail()).into(holder.thumbView);
 
     }

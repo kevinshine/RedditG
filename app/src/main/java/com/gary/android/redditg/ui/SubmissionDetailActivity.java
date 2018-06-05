@@ -26,17 +26,17 @@ public class SubmissionDetailActivity extends AppCompatActivity {
         toolbar.setTitle("DetailActivity");
 
         String submissionId = getIntent().getStringExtra(Constants.EXTRA_SUBMISSION_ID);
-        Log.d(TAG,"submissionId:" + submissionId);
+        Log.d(TAG, "submissionId:" + submissionId);
 
         ImageView subImg = findViewById(R.id.sub_image);
         TextView subTitle = findViewById(R.id.sub_title);
 
         SubmissionDetailViewModel submissionViewModel = ViewModelProviders.of(this).get(SubmissionDetailViewModel.class);
-        submissionViewModel.getComments().observe(this, comments-> {
-            Log.d(TAG,"Root:" + comments);
+        submissionViewModel.getComments().observe(this, comments -> {
+            Log.d(TAG, "Root:" + comments);
         });
 
-        submissionViewModel.getSubmission().observe(this,submission -> {
+        submissionViewModel.getSubmission().observe(this, submission -> {
             if (submission == null)
                 return;
 
@@ -44,8 +44,8 @@ public class SubmissionDetailActivity extends AppCompatActivity {
             subTitle.setText(submission.getTitle());
             //set image
             String url = submission.getUrl();
-            Log.d(TAG,"url:" + url);
-            if (!TextUtils.isEmpty(url)){
+            Log.d(TAG, "url:" + url);
+            if (!TextUtils.isEmpty(url)) {
                 Glide.with(this).load(url).into(subImg);
             }
         });
