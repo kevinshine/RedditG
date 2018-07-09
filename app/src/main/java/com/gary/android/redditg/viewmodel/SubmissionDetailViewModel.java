@@ -3,41 +3,51 @@ package com.gary.android.redditg.viewmodel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
+import android.arch.paging.PagedList;
 import android.os.AsyncTask;
+import android.util.Log;
 
-import com.gary.android.redditg.reddit.RedditManager;
+import com.gary.android.redditg.RedditgApp;
+import com.gary.android.redditg.api.RedditApi;
+import com.gary.android.redditg.model.RedditPost;
 
-import net.dean.jraw.RedditClient;
-import net.dean.jraw.models.Submission;
-import net.dean.jraw.tree.RootCommentNode;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SubmissionDetailViewModel extends ViewModel {
-    private MutableLiveData<RootCommentNode> mCommentsListLiveData;
-    private MutableLiveData<Submission> mSubmission;
+    private static final String TAG = SubmissionDetailViewModel.class.getSimpleName();
 
-    public MutableLiveData<Submission> getSubmission() {
+    private MutableLiveData<RedditPost> mSubmission;
+
+    public MutableLiveData<RedditPost> getRedditPostDetail() {
         if (mSubmission == null) {
             mSubmission = new MutableLiveData<>();
         }
         return mSubmission;
     }
 
-    public LiveData<RootCommentNode> getComments() {
-        if (mCommentsListLiveData == null) {
-            mCommentsListLiveData = new MutableLiveData<>();
-        }
-        return mCommentsListLiveData;
-    }
+    public void loadContent(String subreddit,String id){
+        RedditgApp.getInstance().getRepository().getPostDetail(subreddit, id, new Callback<List<RedditApi.ListingResponse>>() {
+            @Override
+            public void onResponse(Call<List<RedditApi.ListingResponse>> call, Response<List<RedditApi.ListingResponse>> response) {
+                try{
+                    RedditApi.ListingResponse detail = response.body().get(0);
+                    if (detail.data.children.size() > 0){
+                        RedditApi.RedditChildrenResponse child = detail.data.children.get(0);
+                        mSubmission.setValue(child.data);
+                    }
+                }catch (Exception e){
+                    //do nothing
+                    e.printStackTrace();
+                }
+            }
 
-    public void loadContent(String submissionId){
-        AsyncTask.THREAD_POOL_EXECUTOR.execute(()->{
-            RedditClient redditClient = RedditManager.getInstance().getRedditClient();
-            if (redditClient != null){
-                Submission submission = redditClient.submission(submissionId).inspect();
-                mSubmission.postValue(submission);
-
-                RootCommentNode rootCommentNode = redditClient.submission(submissionId).comments();
-                mCommentsListLiveData.postValue(rootCommentNode);
+            @Override
+            public void onFailure(Call<List<RedditApi.ListingResponse>> call, Throwable t) {
+                Log.d(TAG,"getPostDetail failed" + t.getMessage());
             }
         });
     }

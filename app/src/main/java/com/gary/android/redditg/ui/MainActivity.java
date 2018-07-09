@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     public static final List<String> defaultSubs =
-            Arrays.asList("frontpage", "pics", "videos", "blog", "creepy", "DIY", "Documentaries",
+            Arrays.asList("pics", "frontpage", "videos", "blog", "creepy", "DIY", "Documentaries",
                     "EarthPorn", "food", "gaming", "GetMotivated",
                     "InternetIsBeautiful", "Jokes", "listentothis",
                     "mildlyinteresting", "movies", "Music", "news", "nottheonion",

@@ -3,6 +3,7 @@ package com.gary.android.redditg.ui;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -14,8 +15,11 @@ import com.gary.android.redditg.Constants;
 import com.gary.android.redditg.R;
 import com.gary.android.redditg.viewmodel.SubmissionDetailViewModel;
 
+
 public class SubmissionDetailActivity extends AppCompatActivity {
     private static final String TAG = SubmissionDetailActivity.class.getSimpleName();
+
+    private CommentsAdapter mCommentsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,18 +29,19 @@ public class SubmissionDetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setTitle("DetailActivity");
 
-        String submissionId = getIntent().getStringExtra(Constants.EXTRA_SUBMISSION_ID);
-        Log.d(TAG, "submissionId:" + submissionId);
+        String id = getIntent().getStringExtra(Constants.EXTRA_SUBMISSION_ID);
+        String subreddit = getIntent().getStringExtra(Constants.EXTRA_SUBREDDIT);
 
         ImageView subImg = findViewById(R.id.sub_image);
         TextView subTitle = findViewById(R.id.sub_title);
 
-        SubmissionDetailViewModel submissionViewModel = ViewModelProviders.of(this).get(SubmissionDetailViewModel.class);
-        submissionViewModel.getComments().observe(this, comments -> {
-            Log.d(TAG, "Root:" + comments);
-        });
+//        RecyclerView commentList = findViewById(R.id.list_comments);
+//        mCommentsAdapter = new CommentsAdapter();
+//        commentList.setAdapter(mCommentsAdapter);
 
-        submissionViewModel.getSubmission().observe(this, submission -> {
+        SubmissionDetailViewModel submissionViewModel = ViewModelProviders.of(this).get(SubmissionDetailViewModel.class);
+
+        submissionViewModel.getRedditPostDetail().observe(this, submission -> {
             if (submission == null)
                 return;
 
@@ -50,7 +55,6 @@ public class SubmissionDetailActivity extends AppCompatActivity {
             }
         });
 
-        submissionViewModel.loadContent(submissionId);
+        submissionViewModel.loadContent(subreddit,id);
     }
-
 }
