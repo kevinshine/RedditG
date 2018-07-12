@@ -3,6 +3,7 @@ package com.gary.android.redditg.ui;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -65,6 +66,12 @@ public class SubredditPageFragment extends Fragment {
         });
 
         mPostsViewModel.showSubreddit(mSubName);
+
+        SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.swipe_refresh);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            swipeRefreshLayout.setRefreshing(false);
+        });
+
         return view;
     }
 }

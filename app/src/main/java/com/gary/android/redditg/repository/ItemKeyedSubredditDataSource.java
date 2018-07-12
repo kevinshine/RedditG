@@ -49,7 +49,13 @@ public class ItemKeyedSubredditDataSource extends ItemKeyedDataSource<String, Re
         mRedditApi.getTopAfter(mSubredditName, params.key, params.requestedLoadSize).enqueue(new Callback<RedditApi.ListingResponse>() {
             @Override
             public void onResponse(Call<RedditApi.ListingResponse> call, Response<RedditApi.ListingResponse> response) {
-
+                if (response.isSuccessful()){
+                    ArrayList<RedditPost> posts = new ArrayList<>(response.body().data.children.size());
+                    for (RedditApi.RedditChildrenResponse child : response.body().data.children) {
+                        posts.add(child.data);
+                    }
+                    callback.onResult(posts);
+                }
             }
 
             @Override
@@ -61,7 +67,6 @@ public class ItemKeyedSubredditDataSource extends ItemKeyedDataSource<String, Re
 
     @Override
     public void loadBefore(@NonNull LoadParams<String> params, @NonNull LoadCallback<RedditPost> callback) {
-
     }
 
     @NonNull

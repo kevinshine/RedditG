@@ -31,4 +31,6 @@ public class PostsViewModel extends ViewModel {
     public LiveData<PagedList<RedditPost>> getRepoResult() {
         return repoResult;
     }
+
+
 }
