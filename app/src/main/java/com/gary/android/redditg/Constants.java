@@ -10,4 +10,6 @@ public class Constants {
 
     public static final String REDDIT_DOMAIN = "i.redd.it";
 
+    public static final String KIND_COMMENT = "t1";
+
 }

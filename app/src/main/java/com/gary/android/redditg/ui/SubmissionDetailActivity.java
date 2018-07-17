@@ -32,13 +32,9 @@ public class SubmissionDetailActivity extends AppCompatActivity {
         String id = getIntent().getStringExtra(Constants.EXTRA_SUBMISSION_ID);
         String subreddit = getIntent().getStringExtra(Constants.EXTRA_SUBREDDIT);
 
+        // detail content
         ImageView subImg = findViewById(R.id.sub_image);
         TextView subTitle = findViewById(R.id.sub_title);
-
-//        RecyclerView commentList = findViewById(R.id.list_comments);
-//        mCommentsAdapter = new CommentsAdapter();
-//        commentList.setAdapter(mCommentsAdapter);
-
         SubmissionDetailViewModel submissionViewModel = ViewModelProviders.of(this).get(SubmissionDetailViewModel.class);
 
         submissionViewModel.getRedditPostDetail().observe(this, submission -> {
@@ -55,6 +51,17 @@ public class SubmissionDetailActivity extends AppCompatActivity {
             }
         });
 
-        submissionViewModel.loadContent(subreddit,id);
+        // comments
+        RecyclerView commentList = findViewById(R.id.list_comments);
+        mCommentsAdapter = new CommentsAdapter();
+        commentList.setAdapter(mCommentsAdapter);
+        commentList.setNestedScrollingEnabled(false);
+
+        submissionViewModel.getComments().observe(this, comments -> {
+            mCommentsAdapter.setData(comments);
+        });
+
+        // load post content
+        submissionViewModel.loadContent(subreddit, id);
     }
 }

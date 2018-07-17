@@ -9,6 +9,7 @@ import android.util.Log;
 import com.gary.android.redditg.RedditgApp;
 import com.gary.android.redditg.api.RedditApi;
 import com.gary.android.redditg.model.RedditPost;
+import com.google.gson.JsonArray;
 
 import java.util.List;
 
@@ -46,8 +47,8 @@ public class InMemoryByItemRepository {
         return pagedList;
     }
 
-    public void getPostDetail(String subReddit, String id, Callback<List<RedditApi.ListingResponse>> callback){
-        Call<List<RedditApi.ListingResponse>> call = mRedditApi.getPostDetail(subReddit,id);
+    public void getPostDetail(String subReddit, String id, Callback<JsonArray> callback) {
+        Call<JsonArray> call = mRedditApi.getPostDetail(subReddit, id, 30);
         call.enqueue(callback);
     }
 }

@@ -1,6 +1,8 @@
 package com.gary.android.redditg.api;
 
+import com.gary.android.redditg.model.Comment;
 import com.gary.android.redditg.model.RedditPost;
+import com.google.gson.JsonArray;
 
 import java.util.List;
 
@@ -15,8 +17,6 @@ public interface RedditApi {
             @Path("subreddit") String subreddit,
             @Query("limit") int limit);
 
-    // for after/before param, either get from RedditDataResponse.after/before,
-    // or pass RedditNewsDataResponse.name (though this is technically incorrect)
     @GET("/r/{subreddit}/hot.json")
     Call<ListingResponse> getTopAfter(
             @Path("subreddit") String subreddit,
@@ -25,9 +25,10 @@ public interface RedditApi {
 
 
     @GET("/r/{subreddit}/comments/{id}.json")
-    Call<List<ListingResponse>> getPostDetail(
+    Call<JsonArray> getPostDetail(
             @Path("subreddit") String subreddit,
-            @Path("id") String id);
+            @Path("id") String id,
+            @Query("limit") int limit);
 
     class ListingResponse {
         public ListingData data;
@@ -39,5 +40,19 @@ public interface RedditApi {
 
     class RedditChildrenResponse {
         public RedditPost data;
+    }
+
+    class CommentListingResponse {
+        public CommentListingData data;
+    }
+
+    class CommentListingData {
+        public List<CommentChildrenResponse> children;
+    }
+
+    class CommentChildrenResponse {
+        public String kind;
+
+        public Comment data;
     }
 }
